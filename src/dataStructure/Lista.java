@@ -13,14 +13,14 @@ package dataStructure;
 public class Lista<E extends Comparable<E>> {
 
 	private Nodo<E> inicio;
-	
+
 	/**
 	 * Crea una lista vacia
 	 */
 	public Lista() {
 		this.inicio = null;
 	}
-	
+
 	/**
 	 * Verifica si la lista se encuentra vacia
 	 * @return true si la lista esta vacia, false si no lo esta
@@ -36,21 +36,103 @@ public class Lista<E extends Comparable<E>> {
 	public void insertarAlInicio(E elemento) {
 		//Se crea un nuevo nodo el cual su valor = elemento
 		Nodo<E> nuevo = new Nodo<E>(elemento);
-		
+
 		//Si la lista no esta vacia se unen los nodos nuevo e inicio
 		if (!estaVacia()) {
 			nuevo.setSiguiente(this.inicio);
 			this.inicio.setAnterior(nuevo);
 		}
-		
+
 		this.inicio = nuevo;
 	}
-	
+
 	/**
 	 * Agrega un nuevo elemento al final de la lista
 	 * @param elemento nuevo elemento en la lista
 	 */
 	public void insertarAlFinal(E elemento) {
+		//Se crea un nuevo nodo el cual su valor = elemento
+		Nodo<E> nuevo = new Nodo<E>(elemento);
+
+		//Si la lista esta vacia el nodo inicial sera el nuevo nodo
+		if (estaVacia()) {
+			this.inicio = nuevo;
+		}
+		else {
+			//Nodo auxiliar para recorrer la lista
+			Nodo<E> aux = this.inicio;
+
+			//Se coloca el nodo auxiliar al final de la lista
+			while (aux.getSiguiente() != null) {
+				aux = aux.getSiguiente();
+			}
+
+			//Se unen los nodos aux y nuevo
+			aux.setSiguiente(nuevo);
+			nuevo.setAnterior(aux);
+		}
+	}
+
+	/**
+	 * Agrega un nuevo elemento a la lista de manera ordenada de menor a mayor
+	 * 
+	 * El elemento se agregara comparando los valores de los nodos
+	 * de izquierda a derecha y buscara su posicion en la lista
+	 * 
+	 * @param elemento nuevo elemento
+	 */
+	public void insertarDeMenorAMayor(E elemento) {
+		//Se crea un nuevo nodo el cual su valor = elemento
+		Nodo<E> nuevo = new Nodo<E>(elemento);
+
+		//Si la lista esta vacia el nodo inicial sera el nuevo nodo
+		if (estaVacia()) {
+			this.inicio = nuevo;
+		}
+		else {
+			//Nodo auxiliar para recorrer la lista
+			Nodo<E> aux = this.inicio;
+			
+			//Nodo anterior al nodo aux
+			Nodo<E> ant = null;
+			
+			/*
+			 * Se recorre el nodo aux y ant  mientras no sea nulo y su valor sea
+			 * menor al valor del nodo nuevo
+			 */
+			while (aux != null && nuevo.compareTo(aux) > 0) {
+				ant = aux;
+				aux = aux.getSiguiente();
+			}
+
+			//Si el auxiliar no avanzo, el nodo nuevo se agrega al inicio
+			if (aux == this.inicio) {
+				nuevo.setSiguiente(aux);
+				aux.setAnterior(nuevo);
+				this.inicio = nuevo;
+			}
+			else {
+				//Se coloca el nodo nuevo entre los nodos ant y aux 
+				if (aux != null) {
+					nuevo.setSiguiente(aux);
+					aux.setAnterior(nuevo);
+				}
+				
+				nuevo.setAnterior(ant);
+				ant.setSiguiente(nuevo);
+			}
+		}
+	}
+
+	/**
+	 * Agrega un nuevo elemento a la lista de manera ordenada de mayor a menor
+	 * 
+	 * El elemento se agregara comparando los valores de los nodos
+	 * de izquierda a derecha y buscara su posicion en la lista
+	 * 
+	 * @param elemento nuevo elemento
+	 */
+	public void insertarDeMayorAMenor(E elemento) {
 		//Se crea un nuevo nodo el cual su valor = elemento
 		Nodo<E> nuevo = new Nodo<E>(elemento);
 		
@@ -61,15 +143,34 @@ public class Lista<E extends Comparable<E>> {
 		else {
 			//Nodo auxiliar para recorrer la lista
 			Nodo<E> aux = this.inicio;
+			//Nodo anterior al nodo auxiliar
+			Nodo<E> ant = null;
 			
-			//Se coloca el nodo auxiliar al final de la lista
-			while (aux.getSiguiente() != null) {
+			/*
+			 * Se recorre el nodo aux y ant  mientras no sea nulo y su valor sea
+			 * mayor al valor del nodo nuevo
+			 */
+			while (aux != null && nuevo.compareTo(aux) < 0) {
+				ant = aux;
 				aux = aux.getSiguiente();
 			}
 			
-			//Se unen los nodos aux y nuevo
-			aux.setSiguiente(nuevo);
-			nuevo.setAnterior(aux);
+			//Si el nodo auxiliar = inicio
+			if (ant == null) {
+				//Se agrega el nuevo elemento al inicio de la lista
+				nuevo.setSiguiente(aux);
+				aux.setAnterior(nuevo);
+				this.inicio = nuevo;
+			}
+			else {
+				//Se agrega el nodo nuevo entre los nodos aux y ant
+				if (aux != null) {
+					aux.setAnterior(nuevo);
+					nuevo.setSiguiente(aux);
+				}
+				ant.setSiguiente(nuevo);
+				nuevo.setAnterior(ant);
+			}
 		}
 	}
 	
@@ -78,34 +179,36 @@ public class Lista<E extends Comparable<E>> {
 	 * y viceversa
 	 */
 	public void mostrar() {
-		
+
 		//Si la lista esta vacia imprime el mensaje
 		if (estaVacia()) {
 			System.out.println("Lista sin elementos");
 			return;
 		}
-		
+
 		//Nodo auxiliar para recorrer
 		Nodo<E> aux = this.inicio;
-		
+
 		//Nodo anterior para recorrer la lista en reversa
 		Nodo<E> ant = null;
-		
+
 		//Recorrido normal
 		while (aux != null) {
 			System.out.print("{" + aux.getValor() + "}-");
-			
+
 			ant = aux;
 			aux = aux.getSiguiente();
 		}
-		
+
 		System.out.println();
-		
+
 		//Recorrido en reversa
 		while (ant != null) {
 			System.out.print("{" + ant.getValor() + "}-");
 			ant = ant.getAnterior();
 		}
-		
+
 	}
+
+
 }
