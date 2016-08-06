@@ -2,6 +2,8 @@
 
 package dataStructure;
 
+import exceptions.TokenNoEncontradoException;
+
 /**
  * Representa un conjunto de elementos, en este caso un conjunto de nodos
  * los cuales se encuentran doblemente enlazados.
@@ -92,10 +94,10 @@ public class Lista<E extends Comparable<E>> {
 		else {
 			//Nodo auxiliar para recorrer la lista
 			Nodo<E> aux = this.inicio;
-			
+
 			//Nodo anterior al nodo aux
 			Nodo<E> ant = null;
-			
+
 			/*
 			 * Se recorre el nodo aux y ant  mientras no sea nulo y su valor sea
 			 * menor al valor del nodo nuevo
@@ -117,7 +119,7 @@ public class Lista<E extends Comparable<E>> {
 					nuevo.setSiguiente(aux);
 					aux.setAnterior(nuevo);
 				}
-				
+
 				nuevo.setAnterior(ant);
 				ant.setSiguiente(nuevo);
 			}
@@ -135,7 +137,7 @@ public class Lista<E extends Comparable<E>> {
 	public void insertarDeMayorAMenor(E elemento) {
 		//Se crea un nuevo nodo el cual su valor = elemento
 		Nodo<E> nuevo = new Nodo<E>(elemento);
-		
+
 		//Si la lista esta vacia el nodo inicial sera el nuevo nodo
 		if (estaVacia()) {
 			this.inicio = nuevo;
@@ -145,7 +147,7 @@ public class Lista<E extends Comparable<E>> {
 			Nodo<E> aux = this.inicio;
 			//Nodo anterior al nodo auxiliar
 			Nodo<E> ant = null;
-			
+
 			/*
 			 * Se recorre el nodo aux y ant  mientras no sea nulo y su valor sea
 			 * mayor al valor del nodo nuevo
@@ -154,7 +156,7 @@ public class Lista<E extends Comparable<E>> {
 				ant = aux;
 				aux = aux.getSiguiente();
 			}
-			
+
 			//Si el nodo auxiliar = inicio
 			if (ant == null) {
 				//Se agrega el nuevo elemento al inicio de la lista
@@ -173,7 +175,66 @@ public class Lista<E extends Comparable<E>> {
 			}
 		}
 	}
-	
+
+	/**
+	 * Determina el numero de elementos que existen en la lista
+	 * @return total de elementos en la lista
+	 */
+	public int size() {
+		int elementos = 0;
+
+		//Nodo auxiliar para recorrer la lista
+		Nodo<E> aux = this.inicio;
+
+		//Recorre la lista y aumenta el numero de elementos cada vez que recorre
+		while (aux != null) {
+			elementos++;
+			aux = aux.getSiguiente();
+		}
+
+		return elementos;
+	}
+
+	/**
+	 * Elimina un elemento especifico de la lista.
+	 * @param token elemento que sera borrado de la lista.
+	 * @throws TokenNoEncontradoException lanza esta excepcion si el token no
+	 * 		se encuentra en la lista o la lista esta vacia.
+	 */
+	public void eliminar(E token) throws TokenNoEncontradoException {
+		if (estaVacia()) {
+			throw new TokenNoEncontradoException("Token no encontrado");
+		}
+
+		//Nodo auxiliar para recorrer la lista
+		Nodo<E> aux = this.inicio;
+
+		//Recorre el nodo aux mientras no sea nulo y su valor != token
+		while (aux != null && aux.getValor().compareTo(token) != 0) {
+			aux = aux.getSiguiente();
+		}
+
+		//Si no encontro el elemento
+		if (aux == null) {
+			throw new TokenNoEncontradoException("Token no encontrado");
+		}
+
+		if (aux == this.inicio) {
+			this.inicio = aux.getSiguiente();
+			this.inicio.setAnterior(null);
+		}
+		else {
+			if(aux.getSiguiente() != null) {
+				aux.getSiguiente().setAnterior(aux.getAnterior());
+			}
+
+			aux.getAnterior().setSiguiente(aux.getSiguiente());
+		}
+
+		aux.setAnterior(null);
+		aux.setSiguiente(null);
+	}
+
 	/**
 	 * Muestra todos los elementos de la lista en consola de izquierda a derecha 
 	 * y viceversa

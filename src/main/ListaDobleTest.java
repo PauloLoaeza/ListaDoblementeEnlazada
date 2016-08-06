@@ -3,6 +3,7 @@
 package main;
 
 import dataStructure.Lista;
+import exceptions.TokenNoEncontradoException;
 
 /*
  * Clase para hacer pruebas con la clase Lista y sus metosos
@@ -49,6 +50,20 @@ public class ListaDobleTest {
 		lista3.insertarDeMayorAMenor(5);
 		
 		System.out.println("\n\nTest 4.- Inserccion de: 7, 3, 9, 8, 5");
+		lista3.mostrar();
+		
+		//Test 5.- Muestra el tamaño de las listas
+		System.out.println("\n\nTest 5.\nTamaño de la lista 1 = " + lista.size());
+		System.out.println("Tamaño de la lista 2 = " + lista2.size());
+		System.out.println("Tamaño de la lista 3 = " + lista3.size());
+		
+		//Test 6.- Eliminar un elemento en la lista 3 y mostar la lista
+		try {
+			lista3.eliminar(5);
+		} catch (TokenNoEncontradoException e) {
+			e.printStackTrace();
+		}
+		System.out.println("\nTest 6.- Se eliminó el numero 5 de la lista 3");
 		lista3.mostrar();
 	}
 }
